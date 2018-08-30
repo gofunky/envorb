@@ -5,4 +5,4 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        BASE: ${BASE}
+        BASE: ${ENVORB_TEST_BASE}
