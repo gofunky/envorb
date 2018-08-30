@@ -1,5 +1,5 @@
-ARG IMAGE=gofunky/envorb
-FROM ${IMAGE}
+ARG BASE=gofunky/envorb
+FROM ${BASE}
 MAINTAINER matfax <mat@fax.fyi>
 
 WORKDIR /test
