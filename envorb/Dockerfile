@@ -1,5 +1,5 @@
-ARG BASE_VERSION=latest
-FROM gofunky/git:${BASE_VERSION}
+ARG BASE
+FROM ${BASE}
 MAINTAINER matfax <mat@fax.fyi>
 
 ADD ./load.sh /usr/local/bin/envload
