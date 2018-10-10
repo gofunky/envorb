@@ -1,0 +1,60 @@
+version: 2.1
+
+orbs:
+  orb-tools: circleci/orb-tools@volatile
+
+master_filter: &master_filter
+  filters:
+    branches:
+      only:
+        - master
+
+workflows:
+  build_latest:
+    jobs:
+      - orb-tools/pack-and-validate-orb:
+          name: validate_orb
+          <<: *master_filter
+          path: ./src/
+          workspace-path: ./orbspace/
+          artifact-path: ./orbspace/
+      - orb-tools/publish-dev-orb:
+          name: publish_orb
+          <<: *master_filter
+          context: orb-tools
+          namespace: gofunky
+          orb-name: envorb
+          segment: minor
+          dev-token-variable: "$ORB_PUBLISHING_TOKEN"
+          workspace-path: ./orbspace/
+          requires:
+            - validate_orb
+  #build_release:
+  #  jobs:
+  #    - envorb/git_tag:
+  #        name: release_tag
+  #        <<: *tag_filter
+  #        alpine_version: "3.8"
+  #        variable: TAG_VERSION
+  #    - dockerorb/build_test_push:
+  #        name: build_release
+  #        <<: *readmyhub_job
+  #        <<: *tag_filter
+  #        attach: true
+  #        use_args: true
+  #        args: "VERSION=${TAG_VERSION}"
+  #        tags: "gofunky/readmyhub:stable,gofunky/readmyhub:${TAG_VERSION}"
+  #        requires:
+  #          - release_tag
+  #    - dockerorb/build_test_push:
+  #        name: build_git_release
+  #        <<: *readmyhub_job
+  #        <<: *tag_filter
+  #        attach: true
+  #        file: "Dockerfile.git"
+  #        use_args: true
+  #        args: "BASE_VERSION=${TAG_VERSION}"
+  #        tags: "gofunky/readmyhub:stable-git,gofunky/readmyhub:${TAG_VERSION}-git"
+  #        requires:
+  #          - build_release
+  #          - release_tag
