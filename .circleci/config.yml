@@ -38,7 +38,7 @@ workflows:
           segment: minor
           orb-path: ./src/
           workspace-path: ./orbspace/
-          dev-token-variable: "$ORB_PUBLISHING_TOKEN"
+          release-token-variable: "$ORB_PUBLISHING_TOKEN"
           requires:
             - publish_orb
   #build_release:
