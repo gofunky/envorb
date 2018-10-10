@@ -18,7 +18,7 @@ workflows:
           path: ./src/
           workspace-path: ./orbspace/
           artifact-path: ./orbspace/
-      - orb-tools/publish-dev-orb:
+      - orb-tools/increment-orb:
           name: publish_orb
           <<: *master_filter
           context: orb-tools
