@@ -1,6 +1,6 @@
 ARG BASE
 FROM ${BASE}
-MAINTAINER matfax <mat@fax.fyi>
+LABEL maintainer="mat@fax.fyi"
 
 WORKDIR /test
 

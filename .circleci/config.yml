@@ -35,7 +35,7 @@ workflows:
           context: orb-tools
           namespace: gofunky
           orb-name: envorb
-          segment: minor
+          segment: patch
           orb-path: "orb.yml"
           workspace-path: ./orbspace/
           release-token-variable: "$ORB_PUBLISHING_TOKEN"
