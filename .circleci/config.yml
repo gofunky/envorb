@@ -18,17 +18,29 @@ workflows:
           path: ./src/
           workspace-path: ./orbspace/
           artifact-path: ./orbspace/
-      - orb-tools/increment-orb:
+      - orb-tools/publish-dev-orb:
           name: publish_orb
           <<: *master_filter
           context: orb-tools
           namespace: gofunky
           orb-name: envorb
-          segment: minor
-          dev-token-variable: "$ORB_PUBLISHING_TOKEN"
+          label: ${CIRCLE_BRANCH}
           workspace-path: ./orbspace/
+          dev-token-variable: "$ORB_PUBLISHING_TOKEN"
           requires:
             - validate_orb
+      - orb-tools/increment-orb:
+          name: increment_orb
+          <<: *master_filter
+          context: orb-tools
+          namespace: gofunky
+          orb-name: envorb
+          segment: minor
+          orb-path: ./src/
+          workspace-path: ./orbspace/
+          dev-token-variable: "$ORB_PUBLISHING_TOKEN"
+          requires:
+            - publish_orb
   #build_release:
   #  jobs:
   #    - envorb/git_tag:
