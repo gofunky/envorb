@@ -230,3 +230,12 @@ Derive the version from the latest git tag. The version is matched automatically
     # The path to the local git repository, the current path by default
     repository: .
 ```
+
+## How to use the variables?
+
+After all, variable usage is straight forward. Use them just as any other environment variable.
+
+```yaml
+- command_with_envload:
+    my_param: "${HARDCODED_VAR}"
+```
