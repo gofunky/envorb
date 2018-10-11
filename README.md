@@ -1,4 +1,4 @@
-## envorb
+# envorb
 
 [![CircleCI](https://circleci.com/gh/gofunky/envorb/tree/master.svg?style=shield)](https://circleci.com/gh/gofunky/envorb/tree/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/22c19fadee13479fac231d551e6442e9)](https://www.codacy.com/app/gofunky/envorb?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gofunky/envorb&amp;utm_campaign=Badge_Grade)
@@ -7,7 +7,7 @@
 
 CircleCI orb that loads and passes environment variables from various sources.
 
-### Why is it necessary?
+## Why is it necessary?
 
 CircleCI 2.1 still allows environment variables persistency only via a bash workaround.
 Slim images such as Alpine, however, don't bash included.
@@ -18,13 +18,13 @@ Is your setup depending on versions extracted from cli commands, a file, a web p
 Thanks to the new orb system form CircleCI 2.1, envorb fetches the environment variables, persists it to the workspace, and allows you via a simple `source` command to load it in your own orb.
 Thereby, public orbs have the capability to require variables idiomatically.
  
-### How to integrate?
+## How to integrate?
 
 Only few steps are necessary to integrate envorb into your inline or public orb.
 
-#### Option 1: Orb only
+### Option 1: Orb only
 
-##### Import the script into your orb yaml
+#### Import the script into your orb yaml
 
 During the preparation steps, fetch the script from the online repository.
 
@@ -39,15 +39,15 @@ During the preparation steps, fetch the script from the online repository.
       fi
 ```
 
-#### Option 2: Integrate the script in your orb's Docker image (recommended)
+### Option 2: Integrate the script in your orb's Docker image (recommended)
 
-##### Add envorb as submodule
+#### Add envorb as submodule
 
 ```cmd
 git submodule add https://github.com/gofunky/envorb.git
 ```
 
-##### Build the Docker image
+#### Build the Docker image
 
 envorb provides templates to build and test your image.
 It is meant to be used as a separate layer and tag.
@@ -70,12 +70,12 @@ The following is a simplified example of our git image that is build using our d
     - build_latest
 ```  
 
-##### (Optional) Enable dependabot
+#### (Optional) Enable dependabot
 
 Dependabot allows you to automatically create pull request for submodule updates.
 If envorb is updated, you can keep your orb updated.
 
-#### Finally, use the script (for both options)
+### Finally, use the script (for both options)
 
 In every step, where the environment variables are needed or should be available to the user of the orb, `source` the imported script first.
 Make sure to attach the workspace first, the variables will not be found otherwise.
@@ -88,7 +88,7 @@ Make sure to attach the workspace first, the variables will not be found otherwi
       your-cli-cmd
 ```
 
-### How to use the envorb?
+## How to use the envorb?
 
 The choice is yours how you load your environment variables.
 Just import the orb and execute a envorb job in your workflow before the envload job that depends on it.
@@ -98,11 +98,11 @@ orbs:
   orb-tools: gofunky/envorb@volatile
 ```
 
-#### Parameters
+### Parameters
 
 These are the parameters that are available in all jobs:
 
-##### alpine_version (optional)
+#### alpine_version (optional)
 
 The Docker alpine version of the envorb image. It is recommended to specify the version explicitly.
 
@@ -110,7 +110,7 @@ The Docker alpine version of the envorb image. It is recommended to specify the 
 alpine_version: "3.8"
 ```
 
-##### variable (required)
+#### variable (required)
 
 The name of the variable to set.
 
@@ -118,7 +118,7 @@ The name of the variable to set.
 variable: MY_VAR
 ```
 
-##### attach (disabled by default)
+#### attach (disabled by default)
 
 To attach the workspace before the variable is set or derived.
 
@@ -126,7 +126,7 @@ To attach the workspace before the variable is set or derived.
 attach: true
 ```
 
-##### attach_at (optional, `.` by default)
+#### attach_at (optional, `.` by default)
 
 Where to attach the workspace.
 
@@ -134,7 +134,7 @@ Where to attach the workspace.
 attach_at: .
 ```
 
-##### checkout (disabled by default)
+#### checkout (disabled by default)
 
 To checkout the branch before the variable is set or derived.
 
@@ -142,7 +142,7 @@ To checkout the branch before the variable is set or derived.
 checkout: true
 ```
 
-##### prepare (optional)
+#### prepare (optional)
 
 Additional prepare steps to execute before the variable is set or derived. 
 
@@ -154,11 +154,11 @@ prepare:
       apk add --no-cache --upgrade git
 ```
 
-#### Jobs
+### Jobs
 
 The following jobs are available. Some have additional parameters.
 
-##### envorb/value
+#### envorb/value
 
 Set a variable explicitly.
 
@@ -168,7 +168,7 @@ Set a variable explicitly.
     value: "foo"
 ```
 
-##### envorb/value
+#### envorb/value
 
 Derive the variable from the given command.
 
@@ -178,7 +178,7 @@ Derive the variable from the given command.
     cmd: my-cli --get-var
 ```
 
-##### envorb/http
+#### envorb/http
 
 Derive the variable from the given http address.
 
@@ -189,7 +189,7 @@ Derive the variable from the given http address.
 ```
 
 
-##### envorb/cmd_version
+#### envorb/cmd_version
 
 Derive a semantic version from the given command. The version is matched automatically.
 
@@ -199,7 +199,7 @@ Derive a semantic version from the given command. The version is matched automat
     cmd: my-cli --version
 ```
 
-##### envorb/http_version
+#### envorb/http_version
 
 Derive a semantic version from the given http address. The version is matched automatically.
 
@@ -209,7 +209,7 @@ Derive a semantic version from the given http address. The version is matched au
     address: https://github.com/gofunky/my-repo-with-version
 ```
 
-##### envorb/github
+#### envorb/github
 
 Derive the version from the github.com tag. The version is matched automatically.
 
@@ -219,7 +219,7 @@ Derive the version from the github.com tag. The version is matched automatically
     repository: gofunky/my-repo-with-version
 ```
 
-##### envorb/git_tag
+#### envorb/git_tag
 
 Derive the version from the latest git tag. The version is matched automatically.
 
