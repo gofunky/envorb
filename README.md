@@ -7,7 +7,7 @@
 
 CircleCI orb that loads and passes environment variables from various sources.
 
-## Why is it necessary?
+## Why it is necessary
 
 CircleCI 2.1 still allows environment variables persistency only via a bash workaround.
 Slim images such as Alpine, however, don't include bash.
@@ -18,7 +18,7 @@ Is your setup depending on versions extracted from cli commands, a file, a web p
 Thanks to the new orb system form CircleCI 2.1, envorb fetches the environment variables, persists it to the workspace, and allows you via a simple `source` command to load it in your own orb.
 Thereby, public orbs have the capability to require variables more idiomatically.
  
-## How to integrate?
+## How to integrate
 
 Only few steps are necessary to integrate envorb into your inline or public orb.
 
@@ -39,7 +39,7 @@ During the preparation steps, fetch the script from the online repository.
       fi
 ```
 
-### Option 2: Integrate the script in your orb's Docker image (recommended)
+### Option 2: Add the script to your orb's Docker image
 
 #### Add envorb as submodule
 
@@ -88,7 +88,7 @@ Make sure to attach the workspace first, the variables will not be found otherwi
       your-cli-cmd
 ```
 
-## How to use the envorb?
+## How to use the envorb
 
 The choice is yours how you load your environment variables.
 Just import the orb and execute a envorb job in your workflow before the envload job that depends on it.
@@ -188,7 +188,6 @@ Derive the variable from the given http address.
     address: https://github.com/gofunky/my-variable-page
 ```
 
-
 #### envorb/cmd_version
 
 Derive a semantic version from the given command. The version is matched automatically.
@@ -231,7 +230,7 @@ Derive the version from the latest git tag. The version is matched automatically
     repository: .
 ```
 
-## How to use the variables?
+## How to use the variables
 
 After all, variable usage is straight forward. Use them just as any other environment variable.
 
