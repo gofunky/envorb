@@ -10,13 +10,13 @@ CircleCI orb that loads and passes environment variables from various sources.
 ## Why is it necessary?
 
 CircleCI 2.1 still allows environment variables persistency only via a bash workaround.
-Slim images such as Alpine, however, don't bash included.
+Slim images such as Alpine, however, don't include bash.
 
-The other challenge, you may face in a CI setup, is the question how to automatically pass semantic versions into a build.
+The other challenge, you may face in a CI setup, is the question how to automatically pass variables (e.g., versions) into a build.
 Is your setup depending on versions extracted from cli commands, a file, a web page, git or GitHub?
 
 Thanks to the new orb system form CircleCI 2.1, envorb fetches the environment variables, persists it to the workspace, and allows you via a simple `source` command to load it in your own orb.
-Thereby, public orbs have the capability to require variables idiomatically.
+Thereby, public orbs have the capability to require variables more idiomatically.
  
 ## How to integrate?
 
