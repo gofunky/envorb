@@ -113,7 +113,6 @@ commands:
           name: Deploy envorb store
           command: |
             mkdir -pv ./env
-            echo "0.2.0" > ./env/ENVORB_VERSION.env
             if [ ! -e "/usr/local/bin/envload" ]; then
               echo "Installing envorb loader..."
               wget -O /usr/local/bin/envload https://raw.githubusercontent.com/gofunky/orbs/master/envorb/load.sh
@@ -286,7 +285,7 @@ jobs:
           <<: *envorb_args
 
   github:
-    description: "Derive the version from the github.com tag"
+    description: "Derive the version from the latest github.com tag"
     parameters:
       <<: *envorb_params
       <<: *envorb_prepare_params
