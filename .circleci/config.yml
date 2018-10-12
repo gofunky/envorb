@@ -12,33 +12,34 @@ master_filter: &master_filter
 workflows:
   build_latest:
     jobs:
-      - orb-tools/pack-and-validate-orb:
+      - orb-tools/pack:
           name: validate_orb
           <<: *master_filter
-          path: ./src/
-          workspace-path: ./orbspace/
-          artifact-path: ./orbspace/
-      - orb-tools/publish-dev-orb:
+          source-dir: ./src/
+          destination-orb-path: ./packed/orb.yml
+          workspace-path: ./packed/orb.yml
+          artifact-path: ./packed/orb.yml
+      - orb-tools/publish:
           name: publish_orb
           <<: *master_filter
           context: orb-tools
-          namespace: gofunky
-          orb-name: envorb
-          label: ${CIRCLE_BRANCH}
-          workspace-path: ./orbspace/
-          dev-token-variable: "$ORB_PUBLISHING_TOKEN"
+          orb-ref: "gofunky/envorb@dev:${CIRCLE_BRANCH}"
+          publish-token-variable: "$ORB_PUBLISHING_TOKEN"
+          orb-path: packed/orb.yml
+          attach-workspace: true
+          checkout: false
           requires:
             - validate_orb
-      - orb-tools/increment-orb:
+      - orb-tools/increment:
           name: increment_orb
           <<: *master_filter
           context: orb-tools
-          namespace: gofunky
-          orb-name: envorb
           segment: patch
-          orb-path: "orb.yml"
-          workspace-path: ./orbspace/
-          release-token-variable: "$ORB_PUBLISHING_TOKEN"
+          orb-ref: gofunky/envorb
+          publish-token-variable: "$ORB_PUBLISHING_TOKEN"
+          orb-path: packed/orb.yml
+          attach-workspace: true
+          checkout: false
           requires:
             - publish_orb
   #build_release:
