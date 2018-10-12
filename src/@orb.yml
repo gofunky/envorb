@@ -2,11 +2,13 @@ version: 2.1
 
 attach_params: &attach_params
   attach:
-    description: "Attach workspace"
+    description: >
+      Attach workspace
     type: boolean
     default: false
   attach_at:
-    description: "Where to attach the workspace"
+    description: >
+      Where to attach the workspace
     type: string
     default: "."
 
@@ -16,7 +18,8 @@ attach_args: &attach_args
 
 alpine_params: &alpine_params
   alpine_version:
-    description: "Alpine version"
+    description: >
+      Alpine version
     type: string
     default: ""
 
@@ -26,11 +29,13 @@ alpine_args: &alpine_args
 envorb_prepare_params: &envorb_prepare_params
   <<: *attach_params
   checkout:
-    description: "Environment variable depends on a checkout"
+    description: >
+      Environment variable depends on a checkout
     type: boolean
     default: false
   prepare:
-    description: "Environment variable depends on preparation steps"
+    description: >
+      Environment variable depends on preparation steps
     type: steps
     default: []
 
@@ -41,7 +46,8 @@ envorb_prepare_args: &envorb_prepare_args
 
 envorb_params: &envorb_params
   variable:
-    description: "Name of the variable"
+    description: >
+      Name of the variable
     type: string
 
 envorb_args: &envorb_args
@@ -49,7 +55,8 @@ envorb_args: &envorb_args
 
 envorb_value_params: &envorb_value_params
   value:
-    description: "The variable value"
+    description: >
+      The variable value
     type: string
 
 envorb_value_args: &envorb_value_args
@@ -57,7 +64,8 @@ envorb_value_args: &envorb_value_args
 
 envorb_cmd_params: &envorb_cmd_params
   cmd:
-    description: "Command that generates the variable"
+    description: >
+      Command that generates the variable
     type: string
 
 envorb_cmd_args: &envorb_cmd_args
@@ -65,7 +73,8 @@ envorb_cmd_args: &envorb_cmd_args
 
 envorb_http_params: &envorb_http_params
   address:
-    description: "HTTP address that contains the variable"
+    description: >
+      HTTP address that contains the variable
     type: string
 
 envorb_http_args: &envorb_http_args
@@ -191,7 +200,8 @@ commands:
 
 jobs:
   value:
-    description: "Set the variable value as specified"
+    description: >
+      Set the variable value as specified
     parameters:
       <<: *envorb_params
       <<: *envorb_prepare_params
@@ -211,7 +221,8 @@ jobs:
           <<: *envorb_args
 
   cmd:
-    description: "Derive the variable from the given command"
+    description: >
+      Derive the variable from the given command
     parameters:
       <<: *envorb_params
       <<: *envorb_prepare_params
@@ -231,7 +242,8 @@ jobs:
           <<: *envorb_args
 
   http:
-    description: "Derive the variable from the given http address"
+    description: >
+      Derive the variable from the given http address
     parameters:
       <<: *envorb_params
       <<: *envorb_prepare_params
@@ -251,7 +263,8 @@ jobs:
           <<: *envorb_args
 
   cmd_version:
-    description: "Derive a semantic version from the given command"
+    description: >
+      Derive a semantic version from the given command
     parameters:
       <<: *envorb_params
       <<: *envorb_prepare_params
@@ -273,7 +286,8 @@ jobs:
           <<: *envorb_args
 
   http_version:
-    description: "Derive a semantic version from the given http address"
+    description: >
+      Derive a semantic version from the given http address
     parameters:
       <<: *envorb_params
       <<: *envorb_prepare_params
@@ -295,13 +309,15 @@ jobs:
           <<: *envorb_args
 
   github:
-    description: "Derive the version from the latest github.com tag"
+    description: >
+      Derive the version from the latest github.com tag
     parameters:
       <<: *envorb_params
       <<: *envorb_prepare_params
       <<: *alpine_params
       repository:
-        description: "Repository in the format 'org/repo'"
+        description: >
+          Repository in the format 'org/repo'
         type: string
     executor:
       name: default
@@ -322,13 +338,15 @@ jobs:
           <<: *envorb_args
 
   git_tag:
-    description: "Derive the version from the latest git tag"
+    description: >
+      Derive the version from the latest git tag
     parameters:
       <<: *envorb_params
       <<: *envorb_prepare_params
       <<: *alpine_params
       repository:
-        description: "Path to the local git repository"
+        description: >
+          Path to the local git repository
         type: string
         default: "."
     executor:

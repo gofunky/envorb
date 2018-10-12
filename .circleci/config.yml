@@ -10,7 +10,7 @@ master_filter: &master_filter
         - master
 
 workflows:
-  build_latest:
+  publish_latest:
     jobs:
       - orb-tools/pack:
           name: validate_orb
@@ -42,7 +42,7 @@ workflows:
           checkout: false
           requires:
             - publish_orb
-  #build_release:
+  #publish_release:
   #  jobs:
   #    - envorb/git_tag:
   #        name: release_tag
