@@ -21,22 +21,24 @@ Thereby, public orbs have the capability to require variables more idiomatically
 ## How to integrate
 
 Only few steps are necessary to integrate envorb into your inline or public orb.
+Use either or both of the two options.
 
 ### Option 1: Orb only
 
-#### Import the script into your orb yaml
+#### Import the orb
+
+```yaml
+orbs:
+  envorb: gofunky/envorb@volatile
+```
+
+#### Import the script into your orb
 
 During the preparation steps, fetch the script from the online repository.
 
 ```yaml
-- run:
-    name: Deploy envorb store
-    command: |
-      if [ ! -e "/usr/local/bin/envload" ]; then
-        echo "Installing envorb loader..."
-        wget -O /usr/local/bin/envload https://raw.githubusercontent.com/gofunky/orbs/master/envorb/load.sh
-        chmod +x /usr/local/bin/envload
-      fi
+steps:
+  - envorb/install
 ```
 
 ### Option 2: Add the script to your orb's Docker image
@@ -95,7 +97,7 @@ Just import the orb and execute a envorb job in your workflow before the envload
 
 ```yaml
 orbs:
-  orb-tools: gofunky/envorb@volatile
+  envorb: gofunky/envorb@volatile
 ```
 
 ### Parameters

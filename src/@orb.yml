@@ -78,6 +78,16 @@ executors:
     docker:
       - image: gofunky/git:2.18.0-alpine<< parameters.alpine_version >>-envload
 commands:
+  install:
+    steps:
+      - run:
+          name: Install envload
+          command: |
+            if [ ! -e "/usr/local/bin/envload" ]; then
+              echo "Installing envorb loader..."
+              wget -O /usr/local/bin/envload https://raw.githubusercontent.com/gofunky/orbs/master/envorb/load.sh
+              chmod +x /usr/local/bin/envload
+            fi
   prepare:
     parameters:
       <<: *envorb_prepare_params
