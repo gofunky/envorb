@@ -35,12 +35,6 @@ workflows:
           version: "dev:${CIRCLE_BRANCH}"
           <<: *master_filter
 
-      - envorb/git_tag:
-          name: release_tag
-          alpine_version: "3.8"
-          variable: ORB_PUBLISHING_VERSION
-          <<: *tag_filter
-
   #publish_release:
   #  jobs:
   #    - envorb/git_tag:
