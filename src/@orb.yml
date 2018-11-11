@@ -80,6 +80,21 @@ envorb_http_params: &envorb_http_params
 envorb_http_args: &envorb_http_args
   address: << parameters.address >>
 
+envorb_repository_path_params: &envorb_repository_path_params
+  repository:
+    description: >
+      Repository in the format 'org/repo'
+    type: string
+
+envorb_repository_params: &envorb_repository_params
+  repository:
+    description: >
+      Repository in the format 'org/repo'
+    type: string
+
+envorb_repository_args: &envorb_repository_args
+  repository: << parameters.repository >>
+
 executors:
   default:
     parameters:
@@ -99,13 +114,12 @@ commands:
             fi
   prepare:
     parameters:
-      <<: *envorb_prepare_params
-      <<: *envorb_params
+      <<: [*envorb_prepare_params, *envorb_params]
     steps:
       - run:
           name: Check variable name
           command: |
-            if [ -e "./env/<< parameters.variable >>.env" ]; then
+            if [ -e "./.env/<< parameters.variable >>.env" ]; then
               echo "Variable naming conflict"
               exit 1
             fi
@@ -128,15 +142,7 @@ commands:
           steps:
             - attach_workspace:
                 at: << parameters.attach_at >>
-      - run:
-          name: Deploy envorb store
-          command: |
-            mkdir -pv ./env
-            if [ ! -e "/usr/local/bin/envload" ]; then
-              echo "Installing envorb loader..."
-              wget -O /usr/local/bin/envload https://raw.githubusercontent.com/gofunky/orbs/master/envorb/load.sh
-              chmod +x /usr/local/bin/envload
-            fi
+      - install
       - steps: << parameters.prepare >>
   value:
     parameters:
@@ -149,12 +155,11 @@ commands:
             source /usr/local/bin/envload
             export << parameters.variable >>="<< parameters.value >>"
             echo "SET << parameters.variable >>: ${<< parameters.variable >>}"
-            echo "${<< parameters.variable >>}" > ./env/<< parameters.variable >>.env
+            echo "${<< parameters.variable >>}" > ./.env/<< parameters.variable >>.env
 
   cmd:
     parameters:
-      <<: *envorb_cmd_params
-      <<: *envorb_params
+      <<: [*envorb_cmd_params, *envorb_params]
     steps:
       - run:
           name: Execute command
@@ -162,12 +167,11 @@ commands:
             source /usr/local/bin/envload
             export << parameters.variable >>=$(<< parameters.cmd >>)
             echo "SET << parameters.variable >>: ${<< parameters.variable >>}"
-            echo "${<< parameters.variable >>}" > ./env/<< parameters.variable >>.env
+            echo "${<< parameters.variable >>}" > ./.env/<< parameters.variable >>.env
 
   http:
     parameters:
-      <<: *envorb_http_params
-      <<: *envorb_params
+      <<: [*envorb_http_params, *envorb_params]
     steps:
       - run:
           name: Fetch HTTP
@@ -175,7 +179,7 @@ commands:
             source /usr/local/bin/envload
             export << parameters.variable >>=$(wget -O - << parameters.address >>)
             echo "SET << parameters.variable >>: ${<< parameters.variable >>}"
-            echo "${<< parameters.variable >>}" > ./env/<< parameters.variable >>.env
+            echo "${<< parameters.variable >>}" > ./.env/<< parameters.variable >>.env
 
   match_version:
     parameters:
@@ -187,7 +191,56 @@ commands:
             source /usr/local/bin/envload
             << parameters.variable >>=$(echo "${<< parameters.variable >>}" | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
             echo "SET << parameters.variable >>: ${<< parameters.variable >>}"
-            echo "${<< parameters.variable >>}" > ./env/<< parameters.variable >>.env
+            echo "${<< parameters.variable >>}" > ./.env/<< parameters.variable >>.env
+
+  github:
+    parameters:
+      <<: [*envorb_params, *envorb_repository_params]
+    steps:
+      - http:
+          <<: *envorb_args
+          address: https://api.github.com/repos/<< parameters.repository >>/releases/latest
+      - cmd:
+          <<: *envorb_args
+          cmd: "${<< parameters.variable >>} | grep -o '\"tag_name\": \"\\K.*?(?=\")'"
+      - match_version:
+          <<: *envorb_args
+
+  git_tag:
+    description: >
+      Derive the version from the latest git tag
+    parameters:
+      <<: [*envorb_params, *envorb_repository_path_params]
+    steps:
+      - cmd:
+          <<: *envorb_args
+          cmd: cd << parameters.repository >> && git describe --abbrev=0 --tags
+      - match_version:
+          <<: *envorb_args
+
+  git_org:
+    description: >
+      Derive the git organization from the repository
+    parameters:
+      <<: [*envorb_params, *envorb_repository_path_params]
+    steps:
+      - cmd:
+          <<: *envorb_args
+          cmd: cd << parameters.repository >> && git config --get remote.origin.url | rev | tr '.:' '/' | cut -d'/' -f3 | rev
+      - match_version:
+          <<: *envorb_args
+
+  git_name:
+    description: >
+      Derive the git organization from the repository
+    parameters:
+      <<: [*envorb_params, *envorb_repository_path_params]
+    steps:
+      - cmd:
+          <<: *envorb_args
+          cmd: cd << parameters.repository >> && git config --get remote.origin.url | rev | tr '.:' '/' | cut -d'/' -f2 | rev
+      - match_version:
+          <<: *envorb_args
 
   complete:
     parameters:
@@ -196,27 +249,22 @@ commands:
       - persist_to_workspace:
           root: .
           paths:
-            - env/<< parameters.variable >>.env
+            - ./.env/<< parameters.variable >>.env
 
 jobs:
   value:
     description: >
       Set the variable value as specified
     parameters:
-      <<: *envorb_params
-      <<: *envorb_prepare_params
-      <<: *alpine_params
-      <<: *envorb_value_params
+      <<: [*envorb_params, *envorb_prepare_params, *alpine_params, *envorb_value_params]
     executor:
       name: default
       <<: *alpine_args
     steps:
       - prepare:
-          <<: *envorb_args
-          <<: *envorb_prepare_args
+          <<: [*envorb_args, *envorb_prepare_args]
       - value:
-          <<: *envorb_args
-          <<: *envorb_value_args
+          <<: [*envorb_args, *envorb_value_args]
       - complete:
           <<: *envorb_args
 
@@ -224,20 +272,15 @@ jobs:
     description: >
       Derive the variable from the given command
     parameters:
-      <<: *envorb_params
-      <<: *envorb_prepare_params
-      <<: *alpine_params
-      <<: *envorb_cmd_params
+      <<: [*envorb_params, *envorb_prepare_params, *alpine_params, *envorb_cmd_params]
     executor:
       name: default
       <<: *alpine_args
     steps:
       - prepare:
-          <<: *envorb_args
-          <<: *envorb_prepare_args
+          <<: [*envorb_args, *envorb_prepare_args]
       - cmd:
-          <<: *envorb_args
-          <<: *envorb_cmd_args
+          <<: [*envorb_args, *envorb_cmd_args]
       - complete:
           <<: *envorb_args
 
@@ -245,20 +288,15 @@ jobs:
     description: >
       Derive the variable from the given http address
     parameters:
-      <<: *envorb_params
-      <<: *envorb_prepare_params
-      <<: *alpine_params
-      <<: *envorb_http_params
+      <<: [*envorb_params, *envorb_prepare_params, *alpine_params, *envorb_http_params]
     executor:
       name: default
       <<: *alpine_args
     steps:
       - prepare:
-          <<: *envorb_args
-          <<: *envorb_prepare_args
+          <<: [*envorb_args, *envorb_prepare_args]
       - http:
-          <<: *envorb_args
-          <<: *envorb_http_args
+          <<: [*envorb_args, *envorb_http_args]
       - complete:
           <<: *envorb_args
 
@@ -266,20 +304,15 @@ jobs:
     description: >
       Derive a semantic version from the given command
     parameters:
-      <<: *envorb_params
-      <<: *envorb_prepare_params
-      <<: *alpine_params
-      <<: *envorb_cmd_params
+      <<: [*envorb_params, *envorb_prepare_params, *alpine_params, *envorb_cmd_params]
     executor:
       name: default
       <<: *alpine_args
     steps:
       - prepare:
-          <<: *envorb_args
-          <<: *envorb_prepare_args
+          <<: [*envorb_args, *envorb_prepare_args]
       - cmd:
-          <<: *envorb_args
-          <<: *envorb_cmd_args
+          <<: [*envorb_args, *envorb_cmd_args]
       - match_version:
           <<: *envorb_args
       - complete:
@@ -289,20 +322,15 @@ jobs:
     description: >
       Derive a semantic version from the given http address
     parameters:
-      <<: *envorb_params
-      <<: *envorb_prepare_params
-      <<: *alpine_params
-      <<: *envorb_http_params
+      <<: [*envorb_params, *envorb_prepare_params, *alpine_params, *envorb_http_params]
     executor:
       name: default
       <<: *alpine_args
     steps:
       - prepare:
-          <<: *envorb_args
-          <<: *envorb_prepare_args
+          <<: [*envorb_args, *envorb_prepare_args]
       - http:
-          <<: *envorb_args
-          <<: *envorb_http_args
+          <<: [*envorb_args, *envorb_http_args]
       - match_version:
           <<: *envorb_args
       - complete:
@@ -312,28 +340,15 @@ jobs:
     description: >
       Derive the version from the latest github.com tag
     parameters:
-      <<: *envorb_params
-      <<: *envorb_prepare_params
-      <<: *alpine_params
-      repository:
-        description: >
-          Repository in the format 'org/repo'
-        type: string
+      <<: [*envorb_params, *envorb_prepare_params, *alpine_params, *envorb_repository_params]
     executor:
       name: default
       <<: *alpine_args
     steps:
       - prepare:
-          <<: *envorb_args
-          <<: *envorb_prepare_args
-      - http:
-          <<: *envorb_args
-          address: https://api.github.com/repos/<< parameters.repository >>/releases/latest
-      - cmd:
-          <<: *envorb_args
-          cmd: "${<< parameters.variable >>} | grep -o '\"tag_name\": \"\\K.*?(?=\")'"
-      - match_version:
-          <<: *envorb_args
+          <<: [*envorb_args, *envorb_prepare_args]
+      - github:
+          <<: [*envorb_args, *envorb_repository_args]
       - complete:
           <<: *envorb_args
 
@@ -341,26 +356,49 @@ jobs:
     description: >
       Derive the version from the latest git tag
     parameters:
-      <<: *envorb_params
-      <<: *envorb_prepare_params
-      <<: *alpine_params
-      repository:
-        description: >
-          Path to the local git repository
-        type: string
-        default: "."
+      <<: [*envorb_params, *envorb_prepare_params, *alpine_params, *envorb_repository_path_params]
     executor:
       name: default
       <<: *alpine_args
     steps:
       - prepare:
-          <<: *envorb_args
-          <<: *envorb_prepare_args
+          <<: [*envorb_args, *envorb_prepare_args]
           checkout: true
-      - cmd:
+      - git_tag:
+          <<: [*envorb_args, *envorb_repository_args]
+      - complete:
           <<: *envorb_args
-          cmd: cd << parameters.repository >> && git describe --abbrev=0 --tags
-      - match_version:
+
+  git_org:
+    description: >
+      Derive the git organization from the repository
+    parameters:
+      <<: [*envorb_params, *envorb_prepare_params, *alpine_params, *envorb_repository_path_params]
+    executor:
+      name: default
+      <<: *alpine_args
+    steps:
+      - prepare:
+          <<: [*envorb_args, *envorb_prepare_args]
+          checkout: true
+      - git_org:
+          <<: [*envorb_args, *envorb_repository_args]
+      - complete:
           <<: *envorb_args
+
+  git_name:
+    description: >
+      Derive the git repository name
+    parameters:
+      <<: [*envorb_params, *envorb_prepare_params, *alpine_params, *envorb_repository_path_params]
+    executor:
+      name: default
+      <<: *alpine_args
+    steps:
+      - prepare:
+          <<: [*envorb_args, *envorb_prepare_args]
+          checkout: true
+      - git_name:
+          <<: [*envorb_args, *envorb_repository_args]
       - complete:
           <<: *envorb_args
