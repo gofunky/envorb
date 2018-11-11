@@ -144,7 +144,11 @@ commands:
             - attach_workspace:
                 at: << parameters.attach_at >>
       - install
+      - run:
+          name: Create envs folder
+          command: mkdir .envs
       - steps: << parameters.prepare >>
+
   value:
     parameters:
       <<: *envorb_value_params
