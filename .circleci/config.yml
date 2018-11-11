@@ -47,33 +47,3 @@ workflows:
           context: orb-tools
           <<: *tag_filter
           requires: [release_tag]
-
-  #publish_release:
-  #  jobs:
-  #    - envorb/git_tag:
-  #        name: release_tag
-  #        <<: *tag_filter
-  #        alpine_version: "3.8"
-  #        variable: TAG_VERSION
-  #    - dockerorb/build_test_push:
-  #        name: build_release
-  #        <<: *readmyhub_job
-  #        <<: *tag_filter
-  #        attach: true
-  #        use_args: true
-  #        args: "VERSION=${TAG_VERSION}"
-  #        tags: "gofunky/readmyhub:stable,gofunky/readmyhub:${TAG_VERSION}"
-  #        requires:
-  #          - release_tag
-  #    - dockerorb/build_test_push:
-  #        name: build_git_release
-  #        <<: *readmyhub_job
-  #        <<: *tag_filter
-  #        attach: true
-  #        file: "Dockerfile.git"
-  #        use_args: true
-  #        args: "BASE_VERSION=${TAG_VERSION}"
-  #        tags: "gofunky/readmyhub:stable-git,gofunky/readmyhub:${TAG_VERSION}-git"
-  #        requires:
-  #          - build_release
-  #          - release_tag
