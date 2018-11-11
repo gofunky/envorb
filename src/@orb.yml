@@ -83,8 +83,9 @@ envorb_http_args: &envorb_http_args
 envorb_repository_path_params: &envorb_repository_path_params
   repository:
     description: >
-      Repository in the format 'org/repo'
+      Repository in the format 'org/repo'. Default is current directory.
     type: string
+    default: '.'
 
 envorb_repository_params: &envorb_repository_params
   repository:
