@@ -120,7 +120,7 @@ commands:
       - run:
           name: Check variable name
           command: |
-            if [ -e "./.env/<< parameters.variable >>.env" ]; then
+            if [ -e "./.envs/<< parameters.variable >>.envs" ]; then
               echo "Variable naming conflict"
               exit 1
             fi
@@ -156,7 +156,7 @@ commands:
             source /usr/local/bin/envload
             export << parameters.variable >>="<< parameters.value >>"
             echo "SET << parameters.variable >>: ${<< parameters.variable >>}"
-            echo "${<< parameters.variable >>}" > ./.env/<< parameters.variable >>.env
+            echo "${<< parameters.variable >>}" > ./.envs/<< parameters.variable >>.envs
 
   cmd:
     parameters:
@@ -168,7 +168,7 @@ commands:
             source /usr/local/bin/envload
             export << parameters.variable >>=$(<< parameters.cmd >>)
             echo "SET << parameters.variable >>: ${<< parameters.variable >>}"
-            echo "${<< parameters.variable >>}" > ./.env/<< parameters.variable >>.env
+            echo "${<< parameters.variable >>}" > ./.envs/<< parameters.variable >>.envs
 
   http:
     parameters:
@@ -180,7 +180,7 @@ commands:
             source /usr/local/bin/envload
             export << parameters.variable >>=$(wget -O - << parameters.address >>)
             echo "SET << parameters.variable >>: ${<< parameters.variable >>}"
-            echo "${<< parameters.variable >>}" > ./.env/<< parameters.variable >>.env
+            echo "${<< parameters.variable >>}" > ./.envs/<< parameters.variable >>.envs
 
   match_version:
     parameters:
@@ -192,7 +192,7 @@ commands:
             source /usr/local/bin/envload
             << parameters.variable >>=$(echo "${<< parameters.variable >>}" | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
             echo "SET << parameters.variable >>: ${<< parameters.variable >>}"
-            echo "${<< parameters.variable >>}" > ./.env/<< parameters.variable >>.env
+            echo "${<< parameters.variable >>}" > ./.envs/<< parameters.variable >>.envs
 
   github:
     parameters:
@@ -250,7 +250,7 @@ commands:
       - persist_to_workspace:
           root: .
           paths:
-            - ./.env/<< parameters.variable >>.env
+            - ./.envs/<< parameters.variable >>.envs
 
 jobs:
   value:
