@@ -101,7 +101,7 @@ executors:
     parameters:
       <<: *alpine_params
     docker:
-      - image: gofunky/git:2.18.0-alpine<< parameters.alpine_version >>-envload
+      - image: gofunky/git:2.18.1-alpine<< parameters.alpine_version >>-envload
 commands:
   install:
     steps:
