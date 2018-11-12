@@ -207,7 +207,7 @@ commands:
           address: https://api.github.com/repos/<< parameters.repository >>/releases/latest
       - cmd:
           <<: *envorb_args
-          cmd: "echo \"${<< parameters.variable >>}\" | grep -o '\"tag_name\": \"\\K.*?(?=\")'"
+          cmd: "echo \"${<< parameters.variable >>}\" | grep -Po '\"tag_name\": \"v?\\K.*?(?=\")'"
       - match_version:
           <<: *envorb_args
 
