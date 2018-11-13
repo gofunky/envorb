@@ -112,6 +112,8 @@ commands:
               echo "Installing envorb loader..."
               wget -O /usr/local/bin/envload https://raw.githubusercontent.com/gofunky/envorb/master/load.sh
               chmod +x /usr/local/bin/envload
+            else
+              echo "SKIPPING..."
             fi
   prepare:
     parameters:
