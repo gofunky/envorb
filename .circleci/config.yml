@@ -33,7 +33,7 @@ workflows:
       - orbtools/env-pack-publish:
           name: publish_latest
           context: orb-tools
-          version: "dev:${CIRCLE_BRANCH}"
+          version: "dev:${CIRCLE_BUILD_NUM}"
           <<: *master_filter
 
       - envorb/git_tag:
