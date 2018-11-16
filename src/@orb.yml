@@ -244,8 +244,6 @@ commands:
       - cmd:
           <<: *envorb_args
           cmd: cd << parameters.repository >> && git config --get remote.origin.url | rev | tr '.:' '/' | cut -d'/' -f3 | rev
-      - match_version:
-          <<: *envorb_args
 
   git_name:
     description: >
@@ -256,8 +254,6 @@ commands:
       - cmd:
           <<: *envorb_args
           cmd: cd << parameters.repository >> && git config --get remote.origin.url | rev | tr '.:' '/' | cut -d'/' -f2 | rev
-      - match_version:
-          <<: *envorb_args
 
   complete:
     parameters:
