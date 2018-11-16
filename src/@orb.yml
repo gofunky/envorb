@@ -149,7 +149,7 @@ commands:
       - install
       - run:
           name: Create envs folder
-          command: mkdir .envs
+          command: mkdir -pv .envs
       - steps: << parameters.prepare >>
 
   value:
