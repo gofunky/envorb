@@ -1,5 +1,7 @@
 version: 2.1
 
+description: Fetch, derive and share environment variables effortlessly among CircleCI orbs and jobs.
+
 attach_params: &attach_params
   attach:
     description: >

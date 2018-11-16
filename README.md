@@ -6,7 +6,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/gofunky/envorb.svg)
 ![GitHub License](https://img.shields.io/github/license/gofunky/envorb.svg)
 
-CircleCI orb that loads and passes environment variables from various sources.
+Fetch, derive and share environment variables effortlessly among CircleCI orbs and jobs.
 
 ## Why it is necessary
 
