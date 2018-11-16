@@ -147,16 +147,20 @@ commands:
             - attach_workspace:
                 at: << parameters.attach_at >>
       - install
-      - run:
-          name: Create envs folder
-          command: mkdir -pv .envs
       - steps: << parameters.prepare >>
+
+  check_folder:
+    steps:
+      - run:
+          name: Create .envs folder if it does not yet exist
+          command: mkdir -pv .envs
 
   value:
     parameters:
       <<: *envorb_value_params
       <<: *envorb_params
     steps:
+      - check_folder
       - run:
           name: Set variable value
           command: |
@@ -169,6 +173,7 @@ commands:
     parameters:
       <<: [*envorb_cmd_params, *envorb_params]
     steps:
+      - check_folder
       - run:
           name: Execute command
           command: |
@@ -181,6 +186,7 @@ commands:
     parameters:
       <<: [*envorb_http_params, *envorb_params]
     steps:
+      - check_folder
       - run:
           name: Fetch HTTP
           command: |
@@ -193,6 +199,7 @@ commands:
     parameters:
       <<: *envorb_params
     steps:
+      - check_folder
       - run:
           name: Match the semantic version
           command: |
