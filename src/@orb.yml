@@ -206,7 +206,7 @@ commands:
           name: Match the semantic version
           command: |
             source /usr/local/bin/envload
-            << parameters.variable >>=$(echo "${<< parameters.variable >>}" | sed -nre 's/((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-((0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?)/\1/p' | head -n1)
+            << parameters.variable >>=$(echo "${<< parameters.variable >>}" | sed -nre 's/^((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-((0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?)/\1/p' | head -n1)
             echo "SET << parameters.variable >>: ${<< parameters.variable >>}"
             echo "${<< parameters.variable >>}" > ./.envs/<< parameters.variable >>.env
 
